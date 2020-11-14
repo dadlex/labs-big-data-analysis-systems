@@ -71,32 +71,30 @@ public class DataCryptoProcessor {
         return decryptedData;
     }
 
-    public static byte[] signData(byte[] data, X509Certificate signingCertificate, PrivateKey signingKey)
+    public byte[] signData(byte[] data)
             throws Exception {
         byte[] signedMessage = null;
-        List<X509Certificate> certList = new ArrayList<X509Certificate>();
+        List<X509Certificate> certList = new ArrayList<>();
         CMSTypedData cmsData = new CMSProcessableByteArray(data);
-        certList.add(signingCertificate);
+        certList.add(encryptionCertificate);
         Store certs = new JcaCertStore(certList);
         CMSSignedDataGenerator cmsGenerator = new CMSSignedDataGenerator();
-        ContentSigner contentSigner = new JcaContentSignerBuilder("SHA256withRSA").build(signingKey);
+        ContentSigner contentSigner = new JcaContentSignerBuilder("SHA256withRSA").build(privateKey);
         cmsGenerator.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(
                 new JcaDigestCalculatorProviderBuilder().setProvider("BC").build())
-                .build(contentSigner, signingCertificate));
+                .build(contentSigner, encryptionCertificate));
         cmsGenerator.addCertificates(certs);
         CMSSignedData cms = cmsGenerator.generate(cmsData, true);
         signedMessage = cms.getEncoded();
         return signedMessage;
     }
 
-    public static boolean verifySignedData(byte[] signedData) throws Exception {
+    public boolean verifySignedData(byte[] signedData) throws Exception {
         ByteArrayInputStream inputStream
                 = new ByteArrayInputStream(signedData);
         ASN1InputStream asnInputStream = new ASN1InputStream(inputStream);
-        CMSSignedData cmsSignedData = new CMSSignedData(
-                ContentInfo.getInstance(asnInputStream.readObject()));
-        SignerInformationStore signers
-                = cmsSignedData.getSignerInfos();
+        CMSSignedData cmsSignedData = new CMSSignedData(ContentInfo.getInstance(asnInputStream.readObject()));
+        SignerInformationStore signers = cmsSignedData.getSignerInfos();
         SignerInformation signer = signers.getSigners().iterator().next();
         Collection<X509CertificateHolder> certCollection
                 = cmsSignedData.getCertificates().getMatches(signer.getSID());
