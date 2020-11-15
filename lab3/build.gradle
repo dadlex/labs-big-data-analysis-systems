@@ -13,6 +13,8 @@ repositories {
 }
 
 dependencies {
+    compile 'org.apache.httpcomponents:httpcore',
+            'org.apache.httpcomponents:httpclient'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

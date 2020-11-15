@@ -7,10 +7,10 @@ server:
         enabled: true
         client-auth: need
         key-store: classpath:server.jks
-        key-store-password: password
+        key-store-password: abc123
         key-alias: server
         key-store-type: JKS
         key-store-provider: SUN
         trust-store: classpath:server.jks
-        trust-store-password: password
+        trust-store-password: abc123
         trust-store-type: JKS
