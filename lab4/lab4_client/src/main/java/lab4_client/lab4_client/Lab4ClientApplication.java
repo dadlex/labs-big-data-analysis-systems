@@ -3,6 +3,9 @@ package lab4_client.lab4_client;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
+
+@EnableZuulProxy
 @SpringBootApplication
 public class Lab4ClientApplication {
 
